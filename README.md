@@ -1,25 +1,11 @@
 # slavic-error-annotation
 
-## Project setup
-```
-npm install
-```
+## paste some sentences
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### click the second button from the left
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### the content should become a label from a textarea
 
-### Lints and fixes files
-```
-npm run lint
-```
+### press the F12 on the key board
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-"# Slavic-Error" 
+### select some words, which would respectively output in the console area
