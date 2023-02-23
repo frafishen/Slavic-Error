@@ -31,12 +31,13 @@
         <div>
             <div id="toolbar">
             <label class="switch">
-                <input type="checkbox">
+                <input type="checkbox" v-model="isOri" @click="seeOri">
                 <span class="slider round"></span>
             </label>
             <span id="mode">Original</span>
             <button id="saveButton" @click="saveContent()"><img src="../../public/save.png" class="pic"/></button>
-            <button @click="transContent()"><img src="../../public/transfer-data.png" class="pic" /></button>
+            <button v-if="editOrOK===1" @click="transContent()"><img src="../../public/check.png" class="pic" /></button>
+            <button v-if="editOrOK===0" @click="editContent()"><img src="../../public/edit.png" class="pic" /></button>
             <button @click="preStep()"><img src="../../public/back-arrow.png"  class="pic" /></button>
             <button @click="nextStep()"><img src="../../public/next.png"  class="pic" /></button>
             </div>
@@ -62,11 +63,29 @@
 let selectionObj = window.getSelection();
 console.log(selectionObj.toString());
 
+
+function seeOri(){
+    if(this.isOri){
+        this.isOri = false;
+        this.rawContent = this.tempContent;
+    }else{
+        this.isOri = true;
+        this.tempContent = this.rawContent + "hello";
+    }
+}
 function transContent() {
+    this.editOrOK = 0;
     this.ori_content = this.rawContent;
     this.view = 1;
     console.log(this.view);
-
+    this.view = 1;
+}
+function editContent() {
+    this.editOrOK = 1;
+    this.view = 0;
+    console.log(this.view);
+    this.view = 0;
+    this.rawContent = this.ori_content;
 }
 function saveContent() {
 
@@ -77,11 +96,29 @@ function preStep() {
 function nextStep() {
 
 }
+
+function expandRangeToWordBoundaries(range) {
+  //向左擴展，直到到達單詞邊界   
+  while (range.startOffset > 0 && isAlphaNumeric(range.toString()[0])) {
+    range.setStart(range.startContainer, range.startOffset - 1);
+  }
+  // 向右擴展，直到到達單詞邊界
+  while (range.endOffset < range.endContainer.length && isAlphaNumeric(range.toString()[range.toString().length - 1])) {
+    range.setEnd(range.endContainer, range.endOffset + 1);
+  }
+}
+
+function isAlphaNumeric(char) {
+  return /\w/.test(char);
+}
+
 function getSelection() {
     const selection = window.getSelection();
-    const selectedText = selection.toString();
-    const words = selectedText.split(/\s+/);
     const range = selection.getRangeAt(0);
+    expandRangeToWordBoundaries(range);
+    const selectedText = selection.toString();
+    const words = selectedText.trim().split(/\s+/);
+    // const range = selection.getRangeAt(0);
     const selectedWords = [];
 
     for (let i = 0; i < words.length; i++) {
@@ -93,6 +130,9 @@ function getSelection() {
 
     console.log(selectedWords); 
 }
+
+
+
 export default {
 
   name: 'HelloWorld',
@@ -104,6 +144,9 @@ export default {
         rawContent: '',
         ori_content: '',
         view: 0,
+        editOrOK: 1,
+        isOri: false,
+        tempContent: '',
     }
   },
     methods: {
@@ -112,6 +155,8 @@ export default {
         preStep: preStep,
         nextStep: nextStep,
         getSelection: getSelection,
+        editContent: editContent,
+        seeOri: seeOri,
     }
   
 }
